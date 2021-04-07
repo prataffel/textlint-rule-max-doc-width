@@ -4,18 +4,6 @@ const ObjectAssign = require("object-assign");
 const defaultOptions = {
     max_width: 120
 };
-String.prototype.bytes = function () {
-    var length = 0;
-    for (var i = 0; i < this.length; i++) {
-        var c = this.charCodeAt(i);
-        if ((c >= 0x0 && c < 0x81) || (c === 0xf8f0) || (c >= 0xff61 && c < 0xffa0) || (c >= 0xf8f1 && c < 0xf8f4)) {
-            length += 1;
-        } else {
-            length += 2;
-        }
-    }
-    return length;
-};
 
 
 function split_text(string, length){
@@ -23,7 +11,7 @@ function split_text(string, length){
     var rest = string;
     // list of characters that are searched for linebreaks.
     const breaking_symbols = [": ", ". ", "! ", "? "];
-    while (rest.bytes() > length) {
+    while (rest.length > length) {
         var line = rest.substring(0, length);
         var breaking_points = breaking_symbols.map(x => line.lastIndexOf(x));
         var split_pos = Math.max(...breaking_points);
@@ -33,8 +21,9 @@ function split_text(string, length){
         }
         splitted_text += line.substring(0, split_pos + 1)
         splitted_text += "\n"
+        console.log(split_pos)
         
-        rest = rest.substring(split_pos + 2, rest.bytes())
+        rest = rest.substring(split_pos + 2, rest.length)
     }
     splitted_text += rest;
 
@@ -65,7 +54,7 @@ const reporter = (context, options = defaultOptions) => {
             for (const key in text) {
                 if (splitted.hasOwnProperty(key)) {
                     const elem = splitted[key];
-                    const len = elem.bytes();
+                    const len = elem.length;
                     console.log(text.search(elem))
                     console.log(total_len)
 
