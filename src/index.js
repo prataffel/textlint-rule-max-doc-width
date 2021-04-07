@@ -29,7 +29,7 @@ function split_text(string, length){
         var split_pos = Math.max(...breaking_points);
         // If no symbol was found, split at the last space
         if (split_pos == -1) {
-            split_pos = line.lastIndexOf(" ") -1
+            split_pos = line.lastIndexOf(" ") - 1
         }
         splitted_text += line.substring(0, split_pos + 1)
         splitted_text += "\n"
@@ -37,6 +37,13 @@ function split_text(string, length){
         rest = rest.substring(split_pos + 2, rest.bytes())
     }
     splitted_text += rest;
+
+    // if (splitted_text.slice(-1) == " "){
+    //     splitted_text += "\n";
+    // }
+    if (breaking_symbols.map(x => x.substring(0, 1)).indexOf(splitted_text.slice(-1)) > -1 ){
+        splitted_text += "\n";
+    }
     return splitted_text;
 }
 
@@ -54,15 +61,17 @@ const reporter = (context, options = defaultOptions) => {
         [Syntax.Document](node) {
             const text = getSource(node);
             const splitted = text.split("\n");
+            var total_len = 0
             for (const key in text) {
                 if (splitted.hasOwnProperty(key)) {
                     const elem = splitted[key];
                     const len = elem.bytes();
+                    console.log(text.search(elem))
+                    console.log(total_len)
 
                     if (len > max) {
-                        var index = text.search(elem)
-                        var replacementstring = split_text(elem, max)
-                        const replace = fixer.replaceTextRange([index, index + len], replacementstring);
+                        var replacementstring = split_text(elem, max);
+                        const replace = fixer.replaceTextRange([total_len, total_len + len], replacementstring);
                         report(
                             node, new RuleError(
                                 `Line is too long(now width: ${len}).`, {
@@ -72,6 +81,14 @@ const reporter = (context, options = defaultOptions) => {
                                 }
                             )
                         );
+                        var no_of_newlines = replacementstring.match(RegExp("\\n", "g")).length
+                        // console.log(no_of_newlines);
+                        total_len += replacementstring.length + 1;
+                        if (replacementstring.slice(-1) == "\n"){
+                            total_len += -1;
+                        }
+                    } else {
+                        total_len += elem.length + 1;
                     }
                 }
             }
