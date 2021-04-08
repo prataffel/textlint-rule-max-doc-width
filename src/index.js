@@ -33,12 +33,6 @@ function split_text(string, length){
     }
     splitted_text += rest;
 
-    // if (splitted_text.slice(-1) == " "){
-    //     splitted_text += "\n";
-    // }
-    // if (breaking_symbols.map(x => x.substring(0, 1)).indexOf(splitted_text.slice(-1)) > -1 ){
-    //     splitted_text += "\n";
-    // }
     return splitted_text;
 }
 
@@ -77,14 +71,7 @@ const reporter = (context, options = defaultOptions) => {
                             )
                         );
                         var no_of_newlines = replacementstring.match(RegExp("\\n", "g")).length
-                        // console.log(no_of_newlines);
-                        // total_len += replacementstring.length + 1;
                         total_len += len + 1;
-                        console.log(replacementstring.length)
-                        console.log(len)
-                        // if (replacementstring.slice(-1) == "\n"){
-                        //     total_len += -1;
-                        // }
                     } else {
                         total_len += elem.length + 1;
                     }
