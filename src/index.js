@@ -7,8 +7,15 @@ const defaultOptions = {
 
 
 function split_text(string, length){
-    var splitted_text = ""
     var rest = string;
+    // get the number of leading spaces
+    var leading_spaces = 0
+    while (rest.indexOf(" ") == 0) {
+        leading_spaces += 1;
+        rest = rest.substring(1, rest.length);
+    }
+    var length = length - leading_spaces;
+    var splitted_text = " ".repeat(leading_spaces);
     // list of characters that are searched for linebreaks.
     const breaking_symbols = [": ", ". ", "! ", "? "];
     while (rest.length > length) {
@@ -20,8 +27,7 @@ function split_text(string, length){
             split_pos = line.lastIndexOf(" ") - 1
         }
         splitted_text += line.substring(0, split_pos + 1)
-        splitted_text += "\n"
-        console.log(split_pos)
+        splitted_text += "\n" + " ".repeat(leading_spaces);
         
         rest = rest.substring(split_pos + 2, rest.length)
     }
@@ -30,9 +36,9 @@ function split_text(string, length){
     // if (splitted_text.slice(-1) == " "){
     //     splitted_text += "\n";
     // }
-    if (breaking_symbols.map(x => x.substring(0, 1)).indexOf(splitted_text.slice(-1)) > -1 ){
-        splitted_text += "\n";
-    }
+    // if (breaking_symbols.map(x => x.substring(0, 1)).indexOf(splitted_text.slice(-1)) > -1 ){
+    //     splitted_text += "\n";
+    // }
     return splitted_text;
 }
 
@@ -55,8 +61,8 @@ const reporter = (context, options = defaultOptions) => {
                 if (splitted.hasOwnProperty(key)) {
                     const elem = splitted[key];
                     const len = elem.length;
-                    console.log(text.search(elem))
-                    console.log(total_len)
+                    // console.log(text.search(elem))
+                    // console.log(total_len)
 
                     if (len > max) {
                         var replacementstring = split_text(elem, max);
@@ -72,10 +78,13 @@ const reporter = (context, options = defaultOptions) => {
                         );
                         var no_of_newlines = replacementstring.match(RegExp("\\n", "g")).length
                         // console.log(no_of_newlines);
-                        total_len += replacementstring.length + 1;
-                        if (replacementstring.slice(-1) == "\n"){
-                            total_len += -1;
-                        }
+                        // total_len += replacementstring.length + 1;
+                        total_len += len + 1;
+                        console.log(replacementstring.length)
+                        console.log(len)
+                        // if (replacementstring.slice(-1) == "\n"){
+                        //     total_len += -1;
+                        // }
                     } else {
                         total_len += elem.length + 1;
                     }
