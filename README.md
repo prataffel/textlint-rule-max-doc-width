@@ -6,7 +6,7 @@
 
 Install with [npm](https://www.npmjs.com/):
 
-    npm install textlint-rule-max-doc-width
+    npm install git+https://github.com/prataffel/textlint-rule-max-doc-width.git
 
 ## Usage
 
@@ -14,8 +14,8 @@ Via `.textlintrc`(Recommended)
 
 ```json
 {
-    "rules": {
-        "max-doc-width": true
+    "max-doc-width": {
+        "max_width": 79,
     }
 }
 ```
